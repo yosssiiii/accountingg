@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro-Audit ERP | Accounting System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Pro-Audit <span>ERP</span></div>
+        <div class="nav-links">
+            <button class="nav-btn" onclick="showPage('entry-page')">New Entry</button>
+            <button class="nav-btn" onclick="showPage('journal-page'); renderJournal();">Journal</button>
+            <button class="nav-btn" onclick="showPage('trial-page')">Trial Balance</button>
+            <button class="nav-btn" onclick="showPage('reports-page')">Financial Reports</button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        
+        <section id="entry-page" class="page active">
+            <div class="card">
+                <div class="header-flex">
+                    <h2>New Journal Entry</h2>
+                    <div id="entry-balance-status" class="balance-indicator">Balance: 0.00</div>
+                </div>
+                <div class="entry-header-inputs">
+                    <input type="date" id="entry-date">
+                    <input type="text" id="journal-no" placeholder="Journal No.">
+                    <input type="text" id="explanation" placeholder="Explanation">
+                </div>
+                <div class="table-wrapper">
+                    <table id="dynamic-entry-table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Account Name</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="entry-rows"></tbody>
+                    </table>
+                </div>
+                <div class="entry-footer">
+                    <button onclick="addNewLine()" class="btn-secondary">+ Add Line</button>
+                    <button onclick="postJournalEntry()" class="btn-primary">Post Transaction</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="journal-page" class="page">
+            <div class="card">
+                <h2>General Journal</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>J.No</th>
+                                <th>Code</th>
+                                <th>Account</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="journal-rows"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="trial-page" class="page">
+            <div class="card">
+                <h2>Trial Balance</h2>
+                <div class="filter-bar">
+                    <input type="date" id="start-date">
+                    <span>to</span>
+                    <input type="date" id="end-date">
+                    <button onclick="generateTrialBalance()" class="btn-secondary">Generate</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><span>Total Debit</span><h3 id="total-debit">$0</h3></div>
+                    <div class="stat-card"><span>Total Credit</span><h3 id="total-credit">$0</h3></div>
+                </div>
+                <div id="balance-badge" class="badge">Balanced</div>
+            </div>
+        </section>
+
+        <section id="reports-page" class="page">
+            <div class="reports-grid">
+                <div class="card report-card">
+                    <h3>Income Statement</h3>
+                    <div class="report-line"><span>Revenue:</span> <span id="report-rev">$0</span></div>
+                    <div class="report-line"><span>Expenses:</span> <span id="report-exp">$0</span></div>
+                    <div class="report-line total"><span>Net Profit:</span> <span id="report-profit">$0</span></div>
+                </div>
+                <div class="card report-card">
+                    <h3>Balance Sheet</h3>
+                    <div class="report-line"><span>Assets:</span> <span id="report-assets">$0</span></div>
+                    <div class="report-line"><span>Liabilities:</span> <span id="report-liab">$0</span></div>
+                    <div class="report-line"><span>Equity:</span> <span id="report-equity">$0</span></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
