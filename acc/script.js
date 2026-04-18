@@ -79,7 +79,6 @@ function renderDashboard() {
         if (e.type === "Credit") accounts[e.code].credit += e.amount;
     });
 
-    
     let totals = { Asset: 0, Liability: 0, Equity: 0, Revenue: 0, Expense: 0 };
     Object.values(accounts).forEach(acc => {
         const net = acc.debit - acc.credit;
@@ -295,7 +294,7 @@ function renderJournal() {
     const data     = getData();
     const query    = (document.getElementById("journal-search")?.value || "").toLowerCase();
     const filtered = query
-        ? data.filter(e => e.name.toLowerCase().includes(query) || e.code.includes(query) || e.journalNo.toLowerCase().includes(query))
+        ? data.filter(e => e.code.includes(query))
         : data;
 
     document.getElementById("journal-rows").innerHTML = filtered.length
