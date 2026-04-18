@@ -3,47 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro-Audit ERP | Accounting System</title>
+    <title>Accounting System</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="logo">Pro-Audit <span>ERP</span></div>
+        <div class="logo">Pro<span>Audit</span> <em>ERP</em></div>
         <div class="nav-links">
-            <button class="nav-btn" onclick="showPage('entry-page')">New Entry</button>
-            <button class="nav-btn" onclick="showPage('journal-page'); renderJournal();">Journal</button>
-            <button class="nav-btn" onclick="showPage('trial-page')">Trial Balance</button>
-            <button class="nav-btn" onclick="showPage('reports-page')">Financial Reports</button>
+            <button class="nav-btn" onclick="showPage('dashboard-page')">
+                <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                Dashboard
+            </button>
+            <button class="nav-btn" onclick="showPage('entry-page')">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+                New Entry
+            </button>
+            <button class="nav-btn" onclick="showPage('journal-page'); renderJournal();">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                Journal
+            </button>
+            <button class="nav-btn" onclick="showPage('trial-page')">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                Trial Balance
+            </button>
+            <button class="nav-btn" onclick="showPage('reports-page'); calculateReports();">
+                <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></svg>
+                Reports
+            </button>
         </div>
     </nav>
 
     <div class="main-container">
-        
-        <section id="entry-page" class="page active">
+
+        <!-- DASHBOARD PAGE -->
+        <section id="dashboard-page" class="page active">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Financial Overview</h1>
+                    <p class="subtitle">Real-time accounting summary</p>
+                </div>
+                <button class="btn-primary" onclick="showPage('entry-page')">+ New Entry</button>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card accent-blue">
+                    <div class="kpi-icon">💰</div>
+                    <div class="kpi-data">
+                        <span>Total Assets</span>
+                        <h3 id="dash-assets">$0.00</h3>
+                    </div>
+                </div>
+                <div class="kpi-card accent-green">
+                    <div class="kpi-icon">📈</div>
+                    <div class="kpi-data">
+                        <span>Net Revenue</span>
+                        <h3 id="dash-revenue">$0.00</h3>
+                    </div>
+                </div>
+                <div class="kpi-card accent-red">
+                    <div class="kpi-icon">📉</div>
+                    <div class="kpi-data">
+                        <span>Total Expenses</span>
+                        <h3 id="dash-expenses">$0.00</h3>
+                    </div>
+                </div>
+                <div class="kpi-card accent-purple">
+                    <div class="kpi-icon">✨</div>
+                    <div class="kpi-data">
+                        <span>Net Profit</span>
+                        <h3 id="dash-profit">$0.00</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="card chart-card">
+                    <h3>Income vs Expenses</h3>
+                    <canvas id="incomeExpenseChart" height="220"></canvas>
+                </div>
+                <div class="card chart-card">
+                    <h3>Account Distribution</h3>
+                    <canvas id="categoryChart" height="220"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-header">
+                    <h3>Recent Transactions</h3>
+                    <button class="btn-link" onclick="showPage('journal-page'); renderJournal();">View all →</button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Date</th><th>J.No</th><th>Account</th><th>Type</th><th>Amount</th></tr>
+                        </thead>
+                        <tbody id="recent-rows"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ENTRY PAGE -->
+        <section id="entry-page" class="page">
             <div class="card">
                 <div class="header-flex">
                     <h2>New Journal Entry</h2>
-                    <div id="entry-balance-status" class="balance-indicator">Balance: 0.00</div>
+                    <div id="entry-balance-status" class="balance-indicator">⚖ Balance: 0.00</div>
                 </div>
                 <div class="entry-header-inputs">
-                    <input type="date" id="entry-date">
-                    <input type="text" id="journal-no" placeholder="Journal No.">
-                    <input type="text" id="explanation" placeholder="Explanation">
+                    <div class="input-group">
+                        <label>Date</label>
+                        <input type="date" id="entry-date">
+                    </div>
+                    <div class="input-group">
+                        <label>Journal No.</label>
+                        <input type="text" id="journal-no" placeholder="e.g. JE-001">
+                    </div>
+                    <div class="input-group">
+                        <label>Explanation</label>
+                        <input type="text" id="explanation" placeholder="Transaction description...">
+                    </div>
                 </div>
                 <div class="table-wrapper">
                     <table id="dynamic-entry-table">
                         <thead>
                             <tr>
-                                <th>Code</th>
+                                <th style="width:130px">Code</th>
                                 <th>Account Name</th>
-                                <th>Debit</th>
-                                <th>Credit</th>
-                                <th>Action</th>
+                                <th style="width:150px">Debit</th>
+                                <th style="width:150px">Credit</th>
+                                <th style="width:60px"></th>
                             </tr>
                         </thead>
                         <tbody id="entry-rows"></tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td colspan="2"><strong>TOTALS</strong></td>
+                                <td><strong id="total-debit-live">0.00</strong></td>
+                                <td><strong id="total-credit-live">0.00</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 <div class="entry-footer">
@@ -53,19 +156,22 @@
             </div>
         </section>
 
+        <!-- JOURNAL PAGE -->
         <section id="journal-page" class="page">
             <div class="card">
-                <h2>General Journal</h2>
+                <div class="section-header">
+                    <h2>General Journal</h2>
+                    <div class="journal-filters">
+                        <input type="text" id="journal-search" placeholder="Search account..." oninput="renderJournal()" style="width:200px">
+                        <button onclick="exportJournalCSV()" class="btn-secondary">⬇ Export CSV</button>
+                        <button onclick="clearAllData()" class="btn-danger">🗑 Clear All</button>
+                    </div>
+                </div>
                 <div class="table-wrapper">
                     <table>
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>J.No</th>
-                                <th>Code</th>
-                                <th>Account</th>
-                                <th>Type</th>
-                                <th>Amount</th>
+                                <th>Date</th><th>J.No</th><th>Code</th><th>Account</th><th>Type</th><th>Amount</th><th></th>
                             </tr>
                         </thead>
                         <tbody id="journal-rows"></tbody>
@@ -74,36 +180,79 @@
             </div>
         </section>
 
+        <!-- TRIAL BALANCE PAGE -->
         <section id="trial-page" class="page">
             <div class="card">
-                <h2>Trial Balance</h2>
-                <div class="filter-bar">
-                    <input type="date" id="start-date">
-                    <span>to</span>
-                    <input type="date" id="end-date">
-                    <button onclick="generateTrialBalance()" class="btn-secondary">Generate</button>
+                <div class="section-header">
+                    <h2>Trial Balance</h2>
+                    <div class="filter-bar">
+                        <input type="date" id="start-date">
+                        <span>to</span>
+                        <input type="date" id="end-date">
+                        <button onclick="generateTrialBalance()" class="btn-secondary">Generate</button>
+                    </div>
                 </div>
-                <div class="stats-grid">
-                    <div class="stat-card"><span>Total Debit</span><h3 id="total-debit">$0</h3></div>
-                    <div class="stat-card"><span>Total Credit</span><h3 id="total-credit">$0</h3></div>
+                <div id="balance-badge" class="badge"></div>
+                <div class="table-wrapper">
+                    <table id="trial-table">
+                        <thead>
+                            <tr><th>Code</th><th>Account Name</th><th>Category</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>
+                        </thead>
+                        <tbody id="trial-rows"></tbody>
+                        <tfoot>
+                            <tr class="totals-row">
+                                <td colspan="3"><strong>TOTAL</strong></td>
+                                <td><strong id="total-debit">$0.00</strong></td>
+                                <td><strong id="total-credit">$0.00</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
-                <div id="balance-badge" class="badge">Balanced</div>
             </div>
         </section>
 
+        <!-- REPORTS PAGE -->
         <section id="reports-page" class="page">
             <div class="reports-grid">
                 <div class="card report-card">
-                    <h3>Income Statement</h3>
-                    <div class="report-line"><span>Revenue:</span> <span id="report-rev">$0</span></div>
-                    <div class="report-line"><span>Expenses:</span> <span id="report-exp">$0</span></div>
-                    <div class="report-line total"><span>Net Profit:</span> <span id="report-profit">$0</span></div>
+                    <div class="report-title">
+                        <span class="report-icon">📊</span>
+                        <h3>Income Statement</h3>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title">Revenue</div>
+                        <div id="report-rev-detail"></div>
+                        <div class="report-line subtotal"><span>Total Revenue</span><span id="report-rev">$0.00</span></div>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title">Expenses</div>
+                        <div id="report-exp-detail"></div>
+                        <div class="report-line subtotal"><span>Total Expenses</span><span id="report-exp">$0.00</span></div>
+                    </div>
+                    <div class="report-line total"><span>Net Profit / (Loss)</span><span id="report-profit">$0.00</span></div>
                 </div>
                 <div class="card report-card">
-                    <h3>Balance Sheet</h3>
-                    <div class="report-line"><span>Assets:</span> <span id="report-assets">$0</span></div>
-                    <div class="report-line"><span>Liabilities:</span> <span id="report-liab">$0</span></div>
-                    <div class="report-line"><span>Equity:</span> <span id="report-equity">$0</span></div>
+                    <div class="report-title">
+                        <span class="report-icon">🏦</span>
+                        <h3>Balance Sheet</h3>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title">Assets</div>
+                        <div id="report-asset-detail"></div>
+                        <div class="report-line subtotal"><span>Total Assets</span><span id="report-assets">$0.00</span></div>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title">Liabilities</div>
+                        <div id="report-liab-detail"></div>
+                        <div class="report-line subtotal"><span>Total Liabilities</span><span id="report-liab">$0.00</span></div>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title">Equity</div>
+                        <div id="report-equity-detail"></div>
+                        <div class="report-line subtotal"><span>Total Equity</span><span id="report-equity">$0.00</span></div>
+                    </div>
+                    <div class="report-line total" id="bs-check"></div>
                 </div>
             </div>
         </section>
